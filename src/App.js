@@ -27,10 +27,10 @@ function App() {
   return (
     <div className="App min-vh-100 d-flex flex-column">
       <Navbar auth={auth} screen={screen} onNavigate={onNavigate} />
-      <div className="bg-black text-white flex-grow-1">
+      <div className="flex-grow-1">
         <main className="container my-5">
-          {screen === '/login' && <LoginForm />}
-          {screen === '/pet/list' && <PetList />}
+          {screen === '/login' && <LoginForm onLogin={onLogin}/>}
+          {screen === '/pet/list' && <PetList auth={auth}/>}
         </main>
       </div>
       <Footer />
