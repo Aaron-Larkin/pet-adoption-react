@@ -2,20 +2,22 @@ import { useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import jwt from 'jsonwebtoken';
+import { Link } from 'react-router-dom';
 import InputField from './InputField';
 
-function LoginForm({ onLogin }) {
+function LoginForm({ onLogin, showError }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const emailError = !email ? 'Email is required.' :
-  !email.includes('@') ? 'Email must include @ sign.' : '';
+  const emailError = !email ? 'Email is required.' : !email.includes('@') ? 'Email must include @ sign.' : '';
 
-  const passwordError = 
-  !password ? 'Password is required.' : 
-  password.length < 8 ? 'Password must be at least 8 characters' : '';
+  const passwordError = !password
+    ? 'Password is required.'
+    : password.length < 8
+    ? 'Password must be at least 8 characters'
+    : '';
 
   function onClickSubmit(evt) {
     evt.preventDefault();
@@ -24,6 +26,7 @@ function LoginForm({ onLogin }) {
 
     if (emailError || passwordError) {
       setError('Please fix errors above');
+      showError('Please fix errors above');
       return;
     }
 
@@ -47,6 +50,7 @@ function LoginForm({ onLogin }) {
         if (resError) {
           if (typeof resError === 'string') {
             setError(resError);
+            showError(resError);
           } else if (resError.details) {
             setError(_.map(resError.details, (x) => <div>{x.message}</div>));
           } else {
@@ -54,6 +58,7 @@ function LoginForm({ onLogin }) {
           }
         } else {
           setError(err.message);
+          showError(err.message);
         }
       });
   }
@@ -68,25 +73,29 @@ function LoginForm({ onLogin }) {
       <h1>Login</h1>
       <form>
         <InputField
-        label="Email"
-        id="LoginForm-email"
-        type="email"
-        value={email}
-        onChange={(evt) => onInputChange(evt, setEmail)}
-        error={emailError}
+          label="Email"
+          id="LoginForm-email"
+          type="email"
+          value={email}
+          onChange={(evt) => onInputChange(evt, setEmail)}
+          error={emailError}
         />
         <InputField
-        label="Password"
-        id="LoginForm-password"
-        type="password"
-        value={password}
-        onChange={(evt) => onInputChange(evt, setPassword)}
-        error={passwordError}
+          label="Password"
+          id="LoginForm-password"
+          type="password"
+          value={password}
+          onChange={(evt) => onInputChange(evt, setPassword)}
+          error={passwordError}
         />
-        <div className="mb-3">
-          <button className="btn btn-primary" type="submit" onClick={(evt) => onClickSubmit(evt)}>
+        <div className="mb-3 d-flex align-items-center">
+          <button className="btn btn-primary me-3" type="submit" onClick={(evt) => onClickSubmit(evt)}>
             Login
           </button>
+          <div>
+            <div>Don't have an account yet?</div>
+            <Link to="/register">Register Here</Link>
+          </div>
         </div>
         {error && <div className="mb-3 text-danger">{error}</div>}
         {success && <div className="mb-3 text-success">{success}</div>}

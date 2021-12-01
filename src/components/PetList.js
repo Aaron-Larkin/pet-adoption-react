@@ -3,8 +3,8 @@ import axios from 'axios';
 import _ from 'lodash';
 import PetListItem from './PetListItem';
 
-function PetList({ auth }) {
-  const [pending, setPending] = useState(true)
+function PetList({ auth, showError}) {
+  const [pending, setPending] = useState(true);
   const [items, setItems] = useState(null);
   const [error, setError] = useState('');
 
@@ -27,13 +27,17 @@ function PetList({ auth }) {
         } else {
           setPending(false);
           setError('Expected an array')
+          showError('Expected an array')
         }
       })
       .catch((err) => {
         console.log(err);
+        setPending(false)
         setError(err.message)
+        showError(err.message);
       });  
-  }, [auth]);
+  }, [auth, showError]);
+  
   return (
     <div>
       <h1>Pet List</h1>
